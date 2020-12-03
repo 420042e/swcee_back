@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Membrete;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class MembreteController extends Controller
 {
@@ -15,7 +16,7 @@ class MembreteController extends Controller
      */
     public function index()
     {
-        return Membrete::all();
+        return Membrete::orderBy('id', 'desc')->get();
     }
 
     private function cargarArchivo($file)
@@ -81,6 +82,17 @@ class MembreteController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $membrete = Membrete::select('nombre')->where( 'id', '=', $id )->get ();
+        $fileName = $membrete->first()->nombre;
+        $filePath = public_path().'/membretes/'.$fileName;
+        if(File::exists($filePath)) {
+            File::delete($filePath);
+        }
+
+        Membrete::destroy($id);
+        return response()->json([
+            'res'=>true,
+            'message'=>'Membrete eliminado correctamente'
+        ], 200);
     }
 }

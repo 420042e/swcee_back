@@ -15,7 +15,7 @@ class TAsistenteController extends Controller
      */
     public function index()
     {
-        return TipoAsistente::orderBy('id', 'desc')->get();
+        return TipoAsistente::orderBy('id', 'asc')->get();
     }
 
     /**

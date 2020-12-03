@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ImgS;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class ImgSController extends Controller
 {
@@ -15,7 +16,7 @@ class ImgSController extends Controller
      */
     public function index()
     {
-        return ImgS::all();
+        return ImgS::orderBy('id', 'desc')->get();
     }
 
     /**
@@ -81,6 +82,17 @@ class ImgSController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $membrete = ImgS::select('nombre')->where( 'id', '=', $id )->get ();
+        $fileName = $membrete->first()->nombre;
+        $filePath = public_path().'/imgs/'.$fileName;
+        if(File::exists($filePath)) {
+            File::delete($filePath);
+        }
+
+        ImgS::destroy($id);
+        return response()->json([
+            'res'=>true,
+            'message'=>'ImgS eliminado correctamente'
+        ], 200);
     }
 }

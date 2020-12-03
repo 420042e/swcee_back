@@ -54,7 +54,11 @@ class RegistroController extends Controller
      */
     public function show($id)
     {
-        $event = Evento::select('eventos.id', 'nombre_evento', 'estado')->leftJoin('categoria', 'eventos.tipo', '=', 'categoria.id')->where( 'eventos.id', $id )->orderBy('eventos.id', 'desc')->get ();
+        $event = Evento::select('eventos.id', 'nombre_evento', 'descripcion', 'estado')
+                        ->leftJoin('categoria', 'eventos.tipo', '=', 'categoria.id')
+                        ->where( 'eventos.id', $id )
+                        ->orderBy('eventos.id', 'desc')
+                        ->get ();
         return $event;
     }
 

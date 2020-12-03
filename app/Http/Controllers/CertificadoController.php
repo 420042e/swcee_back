@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Asistente;
 use App\Models\Certificado;
 use Illuminate\Support\Facades\DB;
+use App\Models\Membrete;
 
 class CertificadoController extends Controller
 {
@@ -52,7 +53,49 @@ class CertificadoController extends Controller
      */
     public function show($id)
     {
-        $certificado = Certificado::where( 'id', '=', '' . $id . '' )->get ();
+        $certificado = Certificado::where( 'id', '=', '' . $id . '' )->get();
+
+        //$user = Membrete::where( 'id', '=', '' . $certificado->id_membrete . '' )->get();
+        //$user = base64_encode(file_get_contents(public_path().'/imgs/'.$fileName));
+        //$certificado = $user->merge($certificado);
+
+        return $certificado;
+    }
+
+    public function certificado64($id)
+    {
+        $certificado = Certificado::leftJoin('membrete', 'id_membrete', '=', 'membrete.id')->where( 'certificados.id', '=', $id )->get();
+        if($certificado[0]->nombre == null)
+        {
+            /*if($certificado[0]->id_membrete == 0)
+            {
+                $base64 = base64_encode(file_get_contents(public_path().'/default/plantilla_inicial.jpg'));
+                $size = getimagesizefromstring(file_get_contents(public_path().'/default/plantilla_inicial.jpg'));
+            }
+            else
+            {
+                $base64 = base64_encode(file_get_contents(public_path().'/membretes/'.$certificado[0]->nombre));
+                $size = getimagesizefromstring(file_get_contents(public_path().'/membretes/'.$certificado[0]->nombre));
+            }*/
+            $base64 = base64_encode(file_get_contents(public_path().'/default/plantilla_inicial.jpg'));
+            $size = getimagesizefromstring(file_get_contents(public_path().'/default/plantilla_inicial.jpg'));
+            $certificado[0]->base64 = $base64;
+            $certificado[0]->anchoImg = $size[0];
+            $certificado[0]->altoImg = $size[1];
+
+            /*$certificado[0]->base64 = "";
+            $certificado[0]->anchoImg = "";
+            $certificado[0]->altoImg = "";*/
+        }
+        else
+        {
+            
+            $base64 = base64_encode(file_get_contents(public_path().'/membretes/'.$certificado[0]->nombre));
+            $certificado[0]->base64 = $base64;
+            $size = getimagesizefromstring(file_get_contents(public_path().'/membretes/'.$certificado[0]->nombre));
+            $certificado[0]->anchoImg = $size[0];
+            $certificado[0]->altoImg = $size[1];
+        }
         return $certificado;
     }
 

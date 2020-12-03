@@ -19,7 +19,14 @@ class AsistenteController extends Controller
     {
         $q = $request->input('search');
         $id_evento = $request->input('id_evento');
-        $user = Asistente::leftJoin('asiste_evento', 'asistentes.id', '=', 'asiste_evento.id_asistente')->where( 'nombre', 'LIKE', '%' . $q . '%' )->where( 'asiste_evento.id_evento', '=', $id_evento )->orderBy('asistentes.id', 'desc')->paginate (10)->setPath ( '' );
+        $user = Asistente::select('asistentes.id', 'asistentes.nombre', 'asistentes.paterno', 'asistentes.materno', 'asistentes.ci', 'asistentes.complemento', 'asistentes.telefono', 'asistentes.email', 'asistentes.institucion', 'asistentes.llave', 'asistentes.ingreso', 'asistentes.id_tipo_asistente', 'asiste_evento.id_asistente', 'asiste_evento.id_evento', 'tipo_asistente.nombre AS tipo_asistente')
+                            ->leftJoin('asiste_evento', 'asistentes.id', '=', 'asiste_evento.id_asistente')
+                            ->leftJoin('tipo_asistente', 'id_tipo_asistente', '=', 'tipo_asistente.id')
+                            ->where( 'asistentes.ci', 'LIKE', '%' . $q . '%' )
+                            ->where( 'asiste_evento.id_evento', '=', $id_evento )
+                            ->orderBy('asistentes.id', 'desc')
+                            ->paginate (10)
+                            ->setPath ( '' );
             $pagination = $user->appends ( array (
                 'search' => $request->input('search')
                 ) );
@@ -88,6 +95,8 @@ class AsistenteController extends Controller
     public function destroy($id)
     {
         Asistente::destroy($id);
+        DB::table('asiste_evento')->where('id_asistente', $id)->delete();
+
         return response()->json([
             'res'=>true,
             'message'=>'Asistente eliminado correctamente'

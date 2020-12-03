@@ -17,7 +17,12 @@ class ReporteController extends Controller
         $q = $request->input('search');
         $id_evento = $request->input('id_evento');
         $ingreso = $request->input('ingreso');
-        $user = Asistente::leftJoin('asiste_evento', 'asistentes.id', '=', 'asiste_evento.id_asistente')->where( 'asistentes.ingreso', '=', $ingreso )->where( 'asiste_evento.id_evento', '=', $id_evento )->orderBy('asistentes.id', 'desc')->get ();
+        $user = Asistente::select('asistentes.id', 'asistentes.nombre', 'asistentes.paterno', 'asistentes.materno', 'asistentes.ci', 'asistentes.complemento', 'asistentes.telefono', 'asistentes.email', 'asistentes.institucion', 'asistentes.llave', 'asistentes.ingreso', 'asistentes.id_tipo_asistente', 'asiste_evento.id_asistente', 'asiste_evento.id_evento', 'tipo_asistente.nombre AS tipo_asistente')
+                            ->leftJoin('asiste_evento', 'asistentes.id', '=', 'asiste_evento.id_asistente')
+                            ->leftJoin('tipo_asistente', 'id_tipo_asistente', '=', 'tipo_asistente.id')
+                            ->where( 'asistentes.ingreso', '=', $ingreso )
+                            ->where( 'asiste_evento.id_evento', '=', $id_evento )
+                            ->orderBy('asistentes.id', 'desc')->get ();
             
         return $user;
     }
@@ -41,7 +46,11 @@ class ReporteController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = Asistente::select('asistentes.id', 'asistentes.nombre', 'asistentes.paterno', 'asistentes.materno', 'asistentes.ci', 'asistentes.complemento', 'asistentes.telefono', 'asistentes.email', 'asistentes.institucion', 'asistentes.llave', 'asistentes.ingreso', 'asistentes.id_tipo_asistente', 'asiste_evento.id_asistente', 'asiste_evento.id_evento', 'tipo_asistente.nombre AS tipo_asistente')
+                            ->leftJoin('asiste_evento', 'asistentes.id', '=', 'asiste_evento.id_asistente')
+                            ->leftJoin('tipo_asistente', 'id_tipo_asistente', '=', 'tipo_asistente.id')
+                            ->where( 'asistentes.id', '=', $id )->get ();
+        return $user;
     }
 
     /**

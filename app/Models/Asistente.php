@@ -20,7 +20,8 @@ class Asistente extends Model
         'email',
         'institucion',
         'llave',
-        'ingreso'
+        'ingreso',
+        'id_tipo_asistente'
     ];
 
     protected $hidden = [

@@ -82,9 +82,11 @@ class EventoController extends Controller
     {
         $input = $request->all();
         $affected = DB::table('eventos')->where('id', $id)->update($input);
+        $event = Evento::select('eventos.id', 'nombre_evento', 'lugar', 'fecha', 'hora', 'estado', 'tipo', 'descripcion', 'nombre')->leftJoin('categoria', 'eventos.tipo', '=', 'categoria.id')->where( 'eventos.id', $id )->orderBy('eventos.id', 'desc')->get ();
         return response()->json([
             'res'=>true,
-            'message'=>'Evento actualizado correctamente'
+            'message'=>'Evento actualizado correctamente',
+            'evento'=>$event
         ], 200);
     }
 

@@ -17,10 +17,14 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $q = $request->input('search');
-        $user = User::select('users.id', 'nombre_usuario', 'nombre', 'ap_paterno', 'ap_materno', 'email', 'pass', 'estado', 'rol')->where( 'nombre_usuario', 'LIKE', '%' . $q . '%' )->orWhere('nombre', 'LIKE', '%' . $q . '%')->orderBy('users.id', 'desc')->paginate (10)->setPath ( '' );
-            $pagination = $user->appends ( array (
-                'search' => $request->input('search')
-                ) );
+        $user = User::select('users.id', 'nombre', 'ap_paterno', 'ap_materno', 'email', 'pass', 'estado', 'rol', 'nombre_rol')
+                        ->leftJoin('rol', 'users.rol', '=', 'rol.id')
+                        ->where('nombre', 'LIKE', '%' . $q . '%')
+                        ->orderBy('users.id', 'desc')
+                        ->paginate (10)->setPath ( '' );
+        $pagination = $user->appends ( array (
+            'search' => $request->input('search')
+            ) );
         return $user;
     }
 
@@ -53,7 +57,7 @@ class UserController extends Controller
     public function show($id)
     {
         //$id = $request->input('search');
-        $user = User::select('users.id', 'nombre_usuario', 'nombre', 'ap_paterno', 'ap_materno', 'email', 'pass', 'estado', 'rol')->where( 'id', '=', '' . $id . '' )->get ();
+        $user = User::select('users.id', 'nombre', 'ap_paterno', 'ap_materno', 'email', 'pass', 'estado', 'rol')->where( 'id', '=', '' . $id . '' )->get ();
         return $user;
     }
 
@@ -67,11 +71,16 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $input = $request->all();
-        $input['pass']=Hash::make($request->pass);
+        //$input['pass']=Hash::make($request->pass);
         $affected = DB::table('users')->where('id', $id)->update($input);
+        $user = User::select('users.id', 'nombre', 'ap_paterno', 'ap_materno', 'email', 'pass', 'estado', 'rol', 'nombre_rol')
+                        ->leftJoin('rol', 'users.rol', '=', 'rol.id')
+                        ->where( 'users.id', '=', '' . $id . '' )->get ();
+
         return response()->json([
             'res'=>true,
-            'message'=>'Usuario actualizado correctamente'
+            'message'=>'Usuario actualizado correctamente',
+            'user'=>$user
         ], 200);
     }
 
@@ -101,6 +110,7 @@ class UserController extends Controller
                 'id'=>$user->id,
                 'nombre'=>$user->nombre,
                 'rol'=>$user->rol,
+                'estado'=>$user->estado,
                 'res'=>true,
                 'token'=>$token,
                 'message'=>'Bienvenido al sistema'

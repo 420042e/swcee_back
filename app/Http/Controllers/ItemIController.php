@@ -75,6 +75,51 @@ class ItemIController extends Controller
         return $user;
     }
 
+    public function itemsi64($id)
+    {
+        $itemsi = ItemsI::leftJoin('imgs', 'itemsi.nombre', '=', 'imgs.id')->where( 'id_certificado', '=', $id )->get ();
+        for ($i = 0; $i < count($itemsi); $i++) {
+            $base64 = base64_encode(file_get_contents(public_path().'/imgs/'.$itemsi[$i]->nombre));
+            $itemsi[$i]->base64 = $base64;
+            $size = getimagesizefromstring(file_get_contents(public_path().'/imgs/'.$itemsi[$i]->nombre));
+            $itemsi[$i]->anchoImg = $size[0];
+            $itemsi[$i]->altoImg = $size[1];
+        }
+
+
+
+        /*$base64 = base64_encode(file_get_contents(public_path().'/imgs/'.$itemsi[0]->nombre));
+        $itemsi[0]->base64 = $base64;
+        $size = getimagesizefromstring(file_get_contents(public_path().'/imgs/'.$itemsi[0]->nombre));
+        $itemsi[0]->anchoImg = $size[0];
+        $itemsi[0]->altoImg = $size[1];*/
+
+        /*$certificado = Certificado::where( 'id', '=', $id )->get();
+        if($certificado[0]->id_membrete != 0)
+        {
+            $membrete = Membrete::where( 'id', '=', $id )->get();
+            $base64 = base64_encode(file_get_contents(public_path().'/membretes/'.$membrete[0]->nombre));
+            $certificado[0]->base64 = $base64;
+            $size = getimagesizefromstring(file_get_contents(public_path().'/membretes/'.$membrete[0]->nombre));
+            $certificado[0]->anchoImg = $size[0];
+            $certificado[0]->altoImg = $size[1];
+        }
+        else
+        {
+            $certificado[0]->base64 = "";
+            $certificado[0]->anchoImg = "";
+            $certificado[0]->altoImg = "";
+        }*/
+
+        /*$base64 = base64_encode(file_get_contents(public_path().'/membretes/'.$membrete[0]->nombre));
+        $certificado[0]->base64 = $base64;
+        $size = getimagesizefromstring(file_get_contents(public_path().'/membretes/'.$membrete[0]->nombre));
+        $certificado[0]->anchoImg = $size[0];
+        $certificado[0]->altoImg = $size[1];*/
+
+        return $itemsi;
+    }
+
     /**
      * Update the specified resource in storage.
      *
