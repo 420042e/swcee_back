@@ -21,7 +21,9 @@ class Asistente extends Model
         'institucion',
         'llave',
         'ingreso',
-        'id_tipo_asistente'
+        'id_tipo_asistente',
+        'apoyo_didactico',
+        'refrigerio'
     ];
 
     protected $hidden = [

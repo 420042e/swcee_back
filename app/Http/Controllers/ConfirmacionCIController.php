@@ -52,8 +52,9 @@ class ConfirmacionCIController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //$input = $request->all();
-        $affected = DB::table('asistentes')->where('id', $id)->update(array('ingreso' => 1));
+        $input = $request->all();
+        //$affected = DB::table('asistentes')->where('id', $id)->update(array('ingreso' => 1));
+        $affected = DB::table('asistentes')->where('id', $id)->update($input);
         return response()->json([
             'res'=>true,
             'message'=>'Asistente confirmado correctamente'

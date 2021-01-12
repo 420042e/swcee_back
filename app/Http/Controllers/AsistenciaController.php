@@ -19,6 +19,15 @@ class AsistenciaController extends Controller
         $ingreso = $request->input('ingreso');
         $q = $request->input('search');
 
+        $apoyo_didactico = Asistente::leftJoin('asiste_evento', 'asistentes.id', '=', 'asiste_evento.id_asistente')
+                ->where( 'apoyo_didactico', '=', '1' )
+                ->where( 'asiste_evento.id_evento', '=', $id_evento )
+                ->get ();
+        $refrigerio = Asistente::leftJoin('asiste_evento', 'asistentes.id', '=', 'asiste_evento.id_asistente')
+                ->where( 'refrigerio', '=', '1' )
+                ->where( 'asiste_evento.id_evento', '=', $id_evento )
+                ->get ();
+
         $asistio = Asistente::leftJoin('asiste_evento', 'asistentes.id', '=', 'asiste_evento.id_asistente')
                 ->where( 'ingreso', '=', '1' )
                 ->where( 'asiste_evento.id_evento', '=', $id_evento )
@@ -33,7 +42,7 @@ class AsistenciaController extends Controller
                 ->where( 'asiste_evento.id_evento', '=', $id_evento )
                 ->orderBy('asistentes.id', 'desc')
                 ->paginate(10)->setPath ( '' );
-        $custom = collect(['asistio' => $asistio->count(), 'no_asistio' => $no_asistio->count()]);
+        $custom = collect(['apoyo_didactico' => $apoyo_didactico->count(), 'refrigerio' => $refrigerio->count(), 'asistio' => $asistio->count(), 'no_asistio' => $no_asistio->count() ]);
         $user = $custom->merge($user);
 
         return $user;

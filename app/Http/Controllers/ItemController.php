@@ -27,12 +27,6 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         $input = $request->all();
-        /*return response()->json([
-            'input'=>$input[0]['id_certificado'],
-            'res'=>true,
-            'message'=>'Items creados correctamente'
-        ], 200);*/
-        //Item::destroy($input[0]['id_certificado']);
         DB::table('items')->where('id_certificado', $input[0]['id_certificado'])->delete();
         foreach ($input as $key => $value) {
             Item::create($value);

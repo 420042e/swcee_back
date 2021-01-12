@@ -17,12 +17,23 @@ class AsistenteController extends Controller
      */
     public function index(Request $request)
     {
-        $q = $request->input('search');
+        $search = $request->input('search');
+        $nombre = $request->input('nombre');
+        $paterno = $request->input('paterno');
+        $materno = $request->input('materno');
+        $institucion = $request->input('institucion');
+
         $id_evento = $request->input('id_evento');
-        $user = Asistente::select('asistentes.id', 'asistentes.nombre', 'asistentes.paterno', 'asistentes.materno', 'asistentes.ci', 'asistentes.complemento', 'asistentes.telefono', 'asistentes.email', 'asistentes.institucion', 'asistentes.llave', 'asistentes.ingreso', 'asistentes.id_tipo_asistente', 'asiste_evento.id_asistente', 'asiste_evento.id_evento', 'tipo_asistente.nombre AS tipo_asistente')
+        $user = Asistente::select('asistentes.id', 'asistentes.nombre', 'asistentes.paterno', 'asistentes.materno', 'asistentes.ci', 'asistentes.complemento', 'asistentes.telefono', 'asistentes.email', 'asistentes.institucion', 'asistentes.llave', 'asistentes.ingreso', 'asistentes.apoyo_didactico', 'asistentes.refrigerio', 'asistentes.id_tipo_asistente', 'asiste_evento.id_asistente', 'asiste_evento.id_evento', 'tipo_asistente.nombre AS tipo_asistente')
                             ->leftJoin('asiste_evento', 'asistentes.id', '=', 'asiste_evento.id_asistente')
                             ->leftJoin('tipo_asistente', 'id_tipo_asistente', '=', 'tipo_asistente.id')
-                            ->where( 'asistentes.ci', 'LIKE', '%' . $q . '%' )
+                            ->where( 'asistentes.ci', 'LIKE', $search . '%' )
+
+                            ->where( 'asistentes.nombre', 'LIKE', $nombre . '%' )
+                            ->where( 'asistentes.paterno', 'LIKE', $paterno . '%' )
+                            ->where( 'asistentes.materno', 'LIKE', $materno . '%' )
+                            ->where( 'asistentes.institucion', 'LIKE', $institucion . '%' )
+
                             ->where( 'asiste_evento.id_evento', '=', $id_evento )
                             ->orderBy('asistentes.id', 'desc')
                             ->paginate (10)

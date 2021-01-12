@@ -23,6 +23,11 @@ use App\Http\Controllers\TAsistenteController;
 use App\Http\Controllers\SendMailController;
 use App\Http\Controllers\SendMailUserController;
 use App\Http\Controllers\UsrConfigController;
+use App\Http\Controllers\ItemQRController;
+use App\Http\Controllers\ArchivoController;
+use App\Http\Controllers\RecursoController;
+use App\Http\Controllers\TieneRecursoController;
+use App\Http\Controllers\TipoRecursoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,11 +55,16 @@ Route::apiResource('enviarcorreouser', SendMailUserController::class);
 
 Route::get('membrete/{filename}', [MembreteController::class, 'show']);
 Route::get('imgs/{filename}', [ImgSController::class, 'show']);
+Route::get('itemQR/{filename}', [ItemQRController::class, 'show']);
+
+Route::apiResource('archivo', ArchivoController::class);
+Route::get('descargarArchi/{filename}', [ArchivoController::class, 'descargarArchi']);
 
 Route::group(['middleware'=>'auth:api'], function(){
     Route::apiResource('eventos', EventoController::class);
     Route::apiResource('categoria', CategoriaController::class);
     Route::apiResource('tipo_asistente', TAsistenteController::class);
+    Route::apiResource('tipo_recurso', TipoRecursoController::class);
     Route::apiResource('email', EmailRController::class);
     Route::apiResource('asistentes', AsistenteController::class);
     Route::apiResource('confirmacionci', ConfirmacionCIController::class);
@@ -64,8 +74,15 @@ Route::group(['middleware'=>'auth:api'], function(){
     Route::apiResource('reporte', ReporteController::class);
     Route::apiResource('certificado', CertificadoController::class);
     Route::get('certificado64/{id_certificado}', [CertificadoController::class, 'certificado64']);
+    Route::apiResource('itemQR', ItemQRController::class);
+    Route::get('generarQR64', [ItemQRController::class, 'generarQR64']);
+    Route::get('itemQR64/{id_certificado}', [ItemQRController::class, 'itemQR64']);
     Route::apiResource('item', ItemController::class);
     Route::apiResource('itemsi', ItemIController::class);
+    Route::apiResource('recurso', RecursoController::class);
+    Route::apiResource('tieneRecurso', TieneRecursoController::class);
+    //Route::apiResource('archivo', ArchivoController::class);
+    //Route::get('descargarArchi/{filename}', [ArchivoController::class, 'descargarArchi']);
     Route::get('itemsi64/{id_certificado}', [ItemIController::class, 'itemsi64']);
     //Route::apiResource('imgs', ImgSController::class);
     //Route::apiResource('membrete', MembreteController::class);
